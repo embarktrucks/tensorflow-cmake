@@ -83,7 +83,11 @@ which is commonly `<PROJECT_ROOT>/cmake/Modules`.
 Execute the `eigen.sh` script as follows: `sudo eigen.sh install <tensorflow-root> [<install-dir> <download-dir>]`. The `install` command specifies that Eigen is to be installed to 
 a directory. The `<tensorflow-root>` argument should be the root of the TensorFlow repository. The optional `<install-dir>` argument allows you to specify the installation directory;
 this defaults to `/usr/local` but may be changed to avoid other versions. The `<download-dir` argument specifies the directory where Eigen will be download and extracted; this defaults
-to the current directory.  
+to the current directory.
+
+```
+If Eigen fails to build because of a Fortran CMake error, copy the file from tensorflow-cmake/usr/share/cmake-2.8/Modules/ to /usr/share/cmake-2.8/Modules/     
+```
 
 To generate the needed CMake files for your project, execute the script as follows: `eigen.sh generate installed <tensorflow-root> [<cmake-dir> <install-dir>]`. The `generate` command specifies that the 
 required CMake files are to be generated and placed in `<cmake-dir>` (this defaults to the current directory, but generally should your CMake modules directory). The optional `<install-dir>`
