@@ -81,6 +81,14 @@ Choose the option that best fits your needs; you may mix these options as well, 
 instructions, be sure to replace `<EXECUTABLE_NAME>` with the name of your executable. Additionally, all generated CMake files should generally be placed in your CMake modules directory, 
 which is commonly `<PROJECT_ROOT>/cmake/Modules`.
 
+### Eigen: Installing for embark
+
+```
+sudo ./eigen.sh install <tensorflow git repo>
+If Eigen fails to build because of a Fortran CMake error, copy the file from tensorflow-cmake/usr/share/cmake-2.8/Modules/ to /usr/share/cmake-2.8/Modules/  
+sudo cp tensorflow-cmake/usr/share/cmake-2.8/Modules/CMakeFortranInformation.cmake /usr/share/cmake-2.8/Modules/CMakeFortranInformation.cmake
+```
+
 ### Eigen: Installing Locally
 Execute the `eigen.sh` script as follows: `sudo eigen.sh install <tensorflow-root> [<install-dir> <download-dir>]`. The `install` command specifies that Eigen is to be installed to 
 a directory. The `<tensorflow-root>` argument should be the root of the TensorFlow repository. The optional `<install-dir>` argument allows you to specify the installation directory;
