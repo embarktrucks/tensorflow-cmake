@@ -20,18 +20,20 @@ git clone https://github.com/tensorflow/tensorflow                  # TensorFlow
 ```
 Enter the cloned repository, and append the following to the `tensorflow/BUILD` file:
 ```bash
-cc_binary(
-    name = "libtensorflow_all.so",
-    linkshared = 1,
-    linkopts = ["-Wl,--version-script=tensorflow/tf_version_script.lds"], # if use Mac remove this line
-    deps = [
-        "//tensorflow/cc:cc_ops",
-        "//tensorflow/cc:client_session",
-        "//tensorflow/cc:scope",
-        "//tensorflow/core:framework_internal",
-        "//tensorflow/core:tensorflow",
-    ],
-)
+   cc_binary(
+       name = "libtensorflow_all.so",
+       linkshared = 1,
+       linkopts = ["-Wl,--version-script=tensorflow/tf_version_script.lds"], # if use Mac remove         this line
+       deps = [
+           "//tensorflow/c:c_api",
+           "//tensorflow/cc:cc_ops",
+           "//tensorflow/cc:client_session",
+           "//tensorflow/cc:scope",
+           "//tensorflow/core:framework_internal",
+           "//tensorflow/core:tensorflow",
+       ],
+  )
+
 ```
 This specifies a new build rule, producing `libtensorflow_all.so`, that includes all the required dependencies for integration
 with a C++ project. Build the shared library and copy it to `/usr/local/lib` as follows:
