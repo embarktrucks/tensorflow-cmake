@@ -1,6 +1,9 @@
 # tensorflow-cmake
 Integrate TensorFlow with CMake projects effortlessly.
 
+To install tensorflow to /usr/local from source run     
+`sudo ./build.sh temp/ /usr/local`
+
 ## TensorFlow
 [TensorFlow](https://www.tensorflow.org/) is an amazing tool for machine learning and intelligence using computational graphs.
 TensorFlow includes APIs for both Python and C++, although the C++ API is slightly less documented. However, the most standard
