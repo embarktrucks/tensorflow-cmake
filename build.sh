@@ -25,13 +25,16 @@ install_packages () {
 }
 
 install_bazel () {
-    BAZEL_DEB=bazel_${BAZEL_VER}-${OSTYPE}.deb
+    BAZEL_VER=0.5.1
+    BAZEL_DEB=bazel_${BAZEL_VER}-linux-x86_64.deb
+    echo "BAZEL_DEB $BAZEL_DEB"
+    echo  https://github.com/bazelbuild/bazel/releases/download/${BAZEL_VER}/${BAZEL_DEB} -O ${CACHE_DIR}/${BAZEL_DEB}
     if ! dpkg -l bazel > /dev/null 2>&1; then
         #wget https://github.com/bazelbuild/bazel/releases/download/$BAZEL_VER/bazel-$BAZEL_VER-installer-$OSTYPE.sh
         if [ ! -e ${BAZEL_DEB} ]; then
-            wget --no-check-certificate https://github.com/bazelbuild/bazel/releases/download/${BAZEL}_VER/${BAZEL_DEB} -O ${CACHE_DIR}/${BAZEL_DEB} || fail
+            wget --no-check-certificate https://github.com/bazelbuild/bazel/releases/download/${BAZEL_VER}/${BAZEL_DEB} -O ${SCRIPT_DIR}/${BAZEL_DEB} || fail
         fi
-        sudo dpkg -i ${CACHE_DIR}/${BAZEL_DEB} || fail
+        sudo dpkg -i ${SCRIPT_DIR}/${BAZEL_DEB} || fail
     fi
 }
 
@@ -49,6 +52,9 @@ mkdir -p "${2}" || fail
 BUILD_DIR=$(readlink -f "${1}")
 INSTALL_DIR=$(readlink -f "${2}")
 CACHE_DIR=${INSTALL_DIR}/cache
+
+echo "INSTALL DIR: $INSTALL_DIR"
+echo "BUILD DIR: $BUILD_DIR"
 
 # install required packages
 install_packages git autoconf build-essential automake libtool curl \
@@ -92,20 +98,24 @@ cat <<EOF >> tensorflow/BUILD
 cc_binary(
     name = "libtensorflow_all.so",
     linkshared = 1,
-    linkopts = ["-Wl,--version-script=tensorflow/tf_version_script.lds"], # if use Mac remove this line
+    linkopts = ["-Wl,--version-script=tensorflow/tf_version_script.lds"], # if use Mac remove         this line
     deps = [
-        "//tensorflow/cc:cc_ops",
-        "//tensorflow/core:framework_internal",
-        "//tensorflow/core:tensorflow",
+       "//tensorflow/c:c_api",
+       "//tensorflow/cc:cc_ops",
+       "//tensorflow/cc:client_session",
+       "//tensorflow/cc:scope",
+       "//tensorflow/core:framework_internal",
+       "//tensorflow/core:tensorflow",
     ],
 )
+
 EOF
 
 ./configure
 
 #expect configure_script.exp
 #./configure < configure_answers.txt
-bazel build tensorflow:libtensorflow_all.so || fail
+bazel build --config opt --config cuda tensorflow:libtensorflow_all.so || fail
 
 # copy the library to the install directory
 cp bazel-bin/tensorflow/libtensorflow_all.so ${INSTALL_DIR}/lib || fail

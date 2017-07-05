@@ -212,7 +212,7 @@ if [ "${MODE}" == "install" ]; then
     cd ${PROTOBUF_FOLDER} || fail
 
 
-
+    sudo apt-get install dh-autoreconf
 
     # configure
     ./autogen.sh || fail
