@@ -40,6 +40,11 @@ install_bazel () {
 
 ################################### Script ###################################
 
+# install javajdk
+sudo add-apt-repository ppa:webupd8team/java
+sudo apt-get update
+sudo apt-get install oracle-java8-installer
+
 if [ ${#} -lt 2 ]; then
     echo "Usage: ${0} <build-dir> <install-dir>"
     exit 0
