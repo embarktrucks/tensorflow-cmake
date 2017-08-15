@@ -2,7 +2,7 @@
 Integrate TensorFlow with CMake projects effortlessly.
 
 To install tensorflow to /usr/local from source run     
-`sudo ./build.sh temp/ /usr/local`
+`sudo ./build.sh temp/ /usr`
 
 ## TensorFlow
 [TensorFlow](https://www.tensorflow.org/) is an amazing tool for machine learning and intelligence using computational graphs.
