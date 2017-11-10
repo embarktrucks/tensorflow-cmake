@@ -6,6 +6,7 @@ RED="\033[1;31m"
 YELLOW="\033[1;33m"
 GREEN="\033[0;32m"
 NO_COLOR="\033[0m"
+TENSORFLOW_COMMIT="23da21150d988f7cf5780488f24adbb116675586"
 
 ################################### Functions ###################################
 
@@ -98,6 +99,8 @@ fi
 # a C++ project.
 # Build the shared library and copy it to $INSTALLDIR
 cd ${BUILD_DIR}/tensorflow-github
+# check out the appropriate commit
+git reset --hard 23da21150d988f7cf5780488f24adbb116675586
 cat <<EOF >> tensorflow/BUILD
 # Added build rule
 cc_binary(
