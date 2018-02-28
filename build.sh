@@ -19,10 +19,10 @@ fail () {
 install_packages () {
     for PKG in ${*}; do
         if ! dpkg -l ${PKG} > /dev/null 2>&1; then
-            apt-get -y install ${PKG} || fail
+            apt-get -qqy install ${PKG} || fail
         fi
     done
-    apt-get update -y
+    apt-get update -qqy
 }
 
 install_bazel () {
@@ -31,9 +31,8 @@ install_bazel () {
     echo "BAZEL_DEB $BAZEL_DEB"
     echo  https://github.com/bazelbuild/bazel/releases/download/${BAZEL_VER}/${BAZEL_DEB} -O ${CACHE_DIR}/${BAZEL_DEB}
     if ! dpkg -l bazel > /dev/null 2>&1; then
-        #wget https://github.com/bazelbuild/bazel/releases/download/$BAZEL_VER/bazel-$BAZEL_VER-installer-$OSTYPE.sh
         if [ ! -e ${BAZEL_DEB} ]; then
-            wget --no-check-certificate https://github.com/bazelbuild/bazel/releases/download/${BAZEL_VER}/${BAZEL_DEB} -O ${SCRIPT_DIR}/${BAZEL_DEB} || fail
+            wget --quiet --no-check-certificate https://github.com/bazelbuild/bazel/releases/download/${BAZEL_VER}/${BAZEL_DEB} -O ${SCRIPT_DIR}/${BAZEL_DEB} || fail
         fi
         sudo dpkg -i ${SCRIPT_DIR}/${BAZEL_DEB} || fail
     fi
@@ -43,8 +42,12 @@ install_bazel () {
 
 # install javajdk
 sudo add-apt-repository ppa:webupd8team/java
-sudo apt-get update
-sudo apt-get install oracle-java8-installer
+sudo apt-get update -qq
+
+# Need to jump past the interactivity requirement in the java installer
+echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections
+
+install_packages oracle-java8-installer
 
 if [ ${#} -lt 2 ]; then
     echo "Usage: ${0} <build-dir> <install-dir>"
@@ -63,12 +66,35 @@ echo "INSTALL DIR: $INSTALL_DIR"
 echo "BUILD DIR: $BUILD_DIR"
 
 # install required packages
-install_packages git autoconf build-essential automake libtool curl \
-                 make g++ unzip python-numpy swig \
-                 python-dev python-wheel openjdk-8-jdk \
-                 pkg-config zip zlib1g-dev wget libcupti-dev || fail
-install_bazel || fail
+install_packages \
+                 autoconf \
+                 automake \
+                 bash-completion \
+                 build-essential \
+                 curl \
+                 expect \
+                 g++ \
+                 git \
+                 libcupti-dev \
+                 libtool \
+                 make \
+                 openjdk-8-jdk \
+                 pkg-config \
+                 python-dev \
+                 python-numpy \
+                 python-wheel \
+                 swig \
+                 unzip \
+                 wget \
+                 zip \
+                 zlib1g-dev \
+                 || fail
 
+# For some reason doing install_packages for this doesn't work. bazel requires it, so
+# we try again here. Might be a good TODO in the future to look into this.
+apt-get install -qqy bash-completion
+
+install_bazel || fail
 
 ####################################################################
 # Download and compile tensorflow from github
@@ -98,7 +124,8 @@ fi
 # that includes all the required dependencies for integration with
 # a C++ project.
 # Build the shared library and copy it to $INSTALLDIR
-cd ${BUILD_DIR}/tensorflow-github
+TF_ROOT=${BUILD_DIR}/tensorflow-github
+cd $TF_ROOT
 # check out the appropriate commit
 git reset --hard 23da21150d988f7cf5780488f24adbb116675586
 cat <<EOF >> tensorflow/BUILD
@@ -119,6 +146,31 @@ cc_binary(
 
 EOF
 
+# Taken from https://gist.github.com/PatWie/0c915d5be59a518f934392219ca65c3d
+export PYTHON_BIN_PATH=/usr/bin/python2.7
+export PYTHON_LIB_PATH="$($PYTHON_BIN_PATH -c 'import site; print(site.getsitepackages()[0])')"
+export PYTHONPATH=${TF_ROOT}/lib
+export PYTHON_ARG=${TF_ROOT}/lib
+export CUDA_TOOLKIT_PATH=/usr/local/cuda-8.0
+export CUDNN_INSTALL_PATH=/usr/local/cuda
+
+export TF_NEED_GCP=0
+export TF_NEED_CUDA=1
+export TF_CUDA_VERSION="$($CUDA_TOOLKIT_PATH/bin/nvcc --version | sed -n 's/^.*release \(.*\),.*/\1/p')"
+export TF_CUDA_COMPUTE_CAPABILITIES=6.1
+export TF_NEED_HDFS=0
+export TF_NEED_OPENCL=0
+export TF_NEED_JEMALLOC=1
+export TF_ENABLE_XLA=0
+export TF_NEED_VERBS=0
+export TF_CUDA_CLANG=0
+export TF_CUDNN_VERSION="$(sed -n 's/^#define CUDNN_MAJOR\s*\(.*\).*/\1/p' $CUDNN_INSTALL_PATH/include/cudnn.h)"
+export TF_NEED_MKL=0
+export TF_DOWNLOAD_MKL=0
+export TF_NEED_MPI=0
+
+export GCC_HOST_COMPILER_PATH=$(which gcc)
+export CC_OPT_FLAGS="-march=native"
 ./configure
 
 #expect configure_script.exp
