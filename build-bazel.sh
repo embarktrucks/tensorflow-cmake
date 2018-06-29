@@ -3,7 +3,7 @@
 
 source $SCRIPT_DIR/build-common.sh
 
-BAZEL_VER=0.5.4
+BAZEL_VER=0.15.0
 BAZEL_DEB=bazel_${BAZEL_VER}-linux-x86_64.deb
 echo "BAZEL_DEB $BAZEL_DEB"
 echo  https://github.com/bazelbuild/bazel/releases/download/${BAZEL_VER}/${BAZEL_DEB} -O ${CACHE_DIR}/${BAZEL_DEB}

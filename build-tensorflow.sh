@@ -33,7 +33,7 @@ ls -lah
 TF_ROOT=$(pwd)/tensorflow-github
 cd $TF_ROOT
 # check out the appropriate commit
-git reset --hard 23da21150d988f7cf5780488f24adbb116675586
+git reset --hard f09aaf0dd33869253020b095d7c44840d1b430fe
 cat <<EOF >> tensorflow/BUILD
 # Added build rule
 cc_binary(
@@ -57,8 +57,8 @@ export PYTHON_BIN_PATH=/usr/bin/python2.7
 export PYTHON_LIB_PATH="$($PYTHON_BIN_PATH -c 'import site; print(site.getsitepackages()[0])')"
 export PYTHONPATH=${TF_ROOT}/lib
 export PYTHON_ARG=${TF_ROOT}/lib
-export CUDA_TOOLKIT_PATH=/usr/local/cuda-8.0
-export CUDNN_INSTALL_PATH=/usr/local/cuda
+export CUDA_TOOLKIT_PATH=/usr/local/cuda
+export CUDNN_INSTALL_PATH=/usr/
 
 export TF_NEED_GCP=0
 export TF_NEED_CUDA=1

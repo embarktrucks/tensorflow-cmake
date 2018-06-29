@@ -6,7 +6,7 @@ RED="\033[1;31m"
 YELLOW="\033[1;33m"
 GREEN="\033[0;32m"
 NO_COLOR="\033[0m"
-TENSORFLOW_COMMIT="23da21150d988f7cf5780488f24adbb116675586"
+TENSORFLOW_COMMIT="f09aaf0dd33869253020b095d7c44840d1b430fe"
 
 ################################### Functions ###################################
 
