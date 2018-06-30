@@ -8,14 +8,12 @@ YELLOW="\033[1;33m"
 GREEN="\033[0;32m"
 NO_COLOR="\033[0m"
 
-sudo cp ${SCRIPT_DIR}/usr/share/cmake-2.8/Modules/CMakeFortranInformation.cmake /usr/share/cmake-2.8/Modules/
-
 ################################### Functions ###################################
 
 # Prints an error message and exits with an error code of 1
 fail () {
-    echo -e "${RED}Command failed - script terminated${NO_COLOR}"
-    exit 1
+  echo -e "${RED}Command failed - script terminated${NO_COLOR}"
+  exit 1
 }
 
 # Prints usage information concerning this script

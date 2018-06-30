@@ -88,8 +88,8 @@ which is commonly `<PROJECT_ROOT>/cmake/Modules`.
 
 ```
 sudo ./eigen.sh install <tensorflow git repo>
-If Eigen fails to build because of a Fortran CMake error, copy the file from tensorflow-cmake/usr/share/cmake-2.8/Modules/ to /usr/share/cmake-2.8/Modules/  
-sudo cp tensorflow-cmake/usr/share/cmake-2.8/Modules/CMakeFortranInformation.cmake /usr/share/cmake-2.8/Modules/CMakeFortranInformation.cmake
+If Eigen fails to build because of a Fortran CMake error, copy the file from tensorflow-cmake/usr/share/cmake-3.5/Modules/ to /usr/share/cmake-3.5/Modules/  
+sudo cp tensorflow-cmake/usr/share/cmake-3.5/Modules/CMakeFortranInformation.cmake /usr/share/cmake-3.5/Modules/CMakeFortranInformation.cmake
 ```
 
 ### Eigen: Installing Locally
@@ -99,7 +99,7 @@ this defaults to `/usr/local` but may be changed to avoid other versions. The `<
 to the current directory.
 
 ```
-If Eigen fails to build because of a Fortran CMake error, copy the file from tensorflow-cmake/usr/share/cmake-2.8/Modules/ to /usr/share/cmake-2.8/Modules/     
+If Eigen fails to build because of a Fortran CMake error, copy the file from tensorflow-cmake/usr/share/cmake-3.5/Modules/ to /usr/share/cmake-3.5/Modules/     
 ```
 
 To generate the needed CMake files for your project, execute the script as follows: `eigen.sh generate installed <tensorflow-root> [<cmake-dir> <install-dir>]`. The `generate` command specifies that the 
